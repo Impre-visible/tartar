@@ -6,7 +6,7 @@ import { Slider } from "@/components/ui/slider"
 import { DefaultSearchResult, SearchInput } from "./ui/search-input";
 import { ResponsiveDrawerDialog, ResponsiveDrawerDialogContent, ResponsiveDrawerDialogTrigger } from "./ui/responsive-dialog";
 import { GooglePlaceResult } from "@/types";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,7 +54,7 @@ function AddTartar() {
         defaultValues: {
             restaurant: "",
             currency: "eur",
-            price: 2.5,
+            price: 0,
             texture: 2.5,
             taste: 2.5,
             presentation: 2.5,
@@ -107,6 +107,11 @@ function AddTartar() {
         const totalScore = (texture + taste + presentation) / 3;
         form.setValue("totalScore", totalScore);
     }
+
+    const handlePriceChange = useCallback((value: number) => {
+        console.log("Price changed: ", value);
+        form.setValue("price", value);
+    }, [form]);
 
     return (
         <ResponsiveDrawerDialog onOpenChange={handleOpenChange} title="Ajouter un tartare">
@@ -168,10 +173,7 @@ function AddTartar() {
                                         <FormLabel>Prix</FormLabel>
                                         <FormControl>
                                             <PriceInput
-                                                onAmountChange={(value) => {
-                                                    console.log("Value: ", value);
-                                                    field.onChange(value);
-                                                }}
+                                                onAmountChange={handlePriceChange}
                                                 onCurrencyChange={(value) => {
                                                     form.setValue("currency", value);
                                                 }}
