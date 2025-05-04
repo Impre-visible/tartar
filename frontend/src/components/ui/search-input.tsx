@@ -1,6 +1,8 @@
 "use client"
 
-import { useState, useEffect, useRef, ReactNode } from "react"
+import type React from "react"
+
+import { useState, useEffect, useRef, type ReactNode } from "react"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
 
@@ -11,7 +13,9 @@ export interface DefaultSearchResult {
 
 export interface SearchInputProps<T extends DefaultSearchResult = DefaultSearchResult> {
     placeholder?: string
-    onSearch: (query: string) => Promise<T[]> | T[]
+    onSearch: (query: string) => void
+    results: T[]
+    isLoading?: boolean
     className?: string
     debounceTime?: number
     renderItem?: (item: T, isSelected: boolean) => ReactNode
@@ -23,6 +27,8 @@ export interface SearchInputProps<T extends DefaultSearchResult = DefaultSearchR
 export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>({
     placeholder = "Search...",
     onSearch,
+    results,
+    isLoading = false,
     className,
     debounceTime = 500,
     renderItem,
@@ -31,40 +37,19 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
     resultsClassName,
 }: SearchInputProps<T>) {
     const [query, setQuery] = useState("")
-    const [results, setResults] = useState<T[]>([])
-    const [isLoading, setIsLoading] = useState(false)
     const [showResults, setShowResults] = useState(false)
     const [selectedIndex, setSelectedIndex] = useState(-1)
     const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const resultsRef = useRef<HTMLDivElement>(null)
 
-    const performSearch = async (searchQuery: string) => {
-        if (searchQuery.trim() === "") {
-            setResults([])
-            return
-        }
-
-        setIsLoading(true)
-        try {
-            const searchResults = await onSearch(searchQuery)
-            setResults(searchResults)
-        } catch (error) {
-            console.error("Erreur during search:", error)
-            setResults([])
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    // Effet pour gérer le debounce
     useEffect(() => {
         if (searchTimeoutRef.current) {
             clearTimeout(searchTimeoutRef.current)
         }
 
         searchTimeoutRef.current = setTimeout(() => {
-            performSearch(query)
+            onSearch(query)
         }, debounceTime)
 
         return () => {
@@ -74,7 +59,6 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
         }
     }, [query, debounceTime, onSearch])
 
-    // Gestion du clic en dehors des résultats pour les fermer
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
             if (
@@ -98,9 +82,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
 
         if (e.key === "ArrowDown") {
             e.preventDefault()
-            setSelectedIndex((prevIndex) =>
-                prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex
-            )
+            setSelectedIndex((prevIndex) => (prevIndex < results.length - 1 ? prevIndex + 1 : prevIndex))
         } else if (e.key === "ArrowUp") {
             e.preventDefault()
             setSelectedIndex((prevIndex) => (prevIndex > 0 ? prevIndex - 1 : 0))
@@ -123,12 +105,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
     }
 
     const defaultRenderItem = (item: T, isSelected: boolean) => (
-        <div
-            className={cn(
-                "px-4 py-2 cursor-pointer hover:bg-muted transition-colors",
-                isSelected && "bg-muted"
-            )}
-        >
+        <div className={cn("px-4 py-2 cursor-pointer hover:bg-muted transition-colors", isSelected && "bg-muted")}>
             {item.text}
         </div>
     )
@@ -154,15 +131,14 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
                     ref={resultsRef}
                     className={cn(
                         "absolute z-10 w-full mt-1 bg-background border rounded-md shadow-md max-h-60 overflow-auto",
-                        resultsClassName
+                        resultsClassName,
                     )}
                 >
                     {results.map((item, index) => (
-                        <div
-                            key={item.id}
-                            onClick={() => handleItemSelect(item)}
-                        >
-                            {renderItem ? renderItem(item, index === selectedIndex) : defaultRenderItem(item, index === selectedIndex)}
+                        <div key={item.id} onClick={() => handleItemSelect(item)}>
+                            {renderItem
+                                ? renderItem(item, index === selectedIndex)
+                                : defaultRenderItem(item, index === selectedIndex)}
                         </div>
                     ))}
                 </div>

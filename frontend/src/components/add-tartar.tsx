@@ -4,12 +4,15 @@ import { useGeolocated } from "react-geolocated";
 
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
-import { SearchInput } from "./ui/search-input";
+import { DefaultSearchResult, SearchInput } from "./ui/search-input";
 
 import { ResponsiveDrawerDialog, ResponsiveDrawerDialogContent, ResponsiveDrawerDialogTrigger } from "./ui/responsive-dialog";
 import { GooglePlaceResult } from "@/types";
+import { useState } from "react";
 
 function AddTartar() {
+    const [results, setResults] = useState<DefaultSearchResult[]>([]);
+    const [selectedRestaurant, setSelectedRestaurant] = useState<DefaultSearchResult | null>(null);
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
@@ -19,8 +22,14 @@ function AddTartar() {
         },
         userDecisionTimeout: 5000,
         watchPosition: false,
-        onSuccess: (position) => {
+        onSuccess: async (position) => {
             console.log("Position: ", position);
+            const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`);
+            const json = await data.json() as GooglePlaceResult[];
+            setResults(json.map((place) => ({
+                id: place.place_id,
+                text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
+            })))
         },
         onError: (error) => {
             console.error("Geolocation error: ", error);
@@ -78,13 +87,22 @@ function AddTartar() {
                             className="mt-2"
                             placeholder="Nom du restaurant..."
                             onSearch={async (query) => {
-                                console.log("Searching for restaurant: ", query);
+                                if (!query) {
+                                    setResults([]);
+                                    return;
+                                }
                                 const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?query=${query}`);
-                                const json = await data.json() as GooglePlaceResult[];
-                                return json.map((place) => ({
+                                const json = await data.json();
+                                const places = Array.isArray(json) ? json as GooglePlaceResult[] : [];
+                                setResults(places.map((place) => ({
                                     id: place.place_id,
                                     text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
-                                }));
+                                })))
+                            }}
+                            results={results}
+                            onItemSelect={(item) => {
+                                setSelectedRestaurant(item);
+                                setResults([]);
                             }}
                         />
                     </div>
