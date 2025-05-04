@@ -4,7 +4,7 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 
 import useMediaQuery from "@/hooks/use-media-query"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Drawer, DrawerContent, DrawerFooter, DrawerTrigger } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 
@@ -30,10 +30,12 @@ function useResponsiveDrawerDialog() {
 // Composant principal
 export function ResponsiveDrawerDialog({
     children,
+    title,
     open = false,
     onOpenChange,
 }: Readonly<{
     children: React.ReactNode
+    title?: string
     open?: boolean
     onOpenChange?: (open: boolean) => void
 }>) {
@@ -54,6 +56,7 @@ export function ResponsiveDrawerDialog({
 
     const contextValue = React.useMemo(
         () => ({
+            title,
             open: _open,
             onOpenChange: handleOpenChange,
             isDesktop,
@@ -65,6 +68,7 @@ export function ResponsiveDrawerDialog({
         <ResponsiveDrawerDialogContext.Provider value={contextValue}>
             {isDesktop ? (
                 <Dialog open={_open} onOpenChange={handleOpenChange}>
+                    <section className="hidden"><DialogTitle>{title}</DialogTitle></section>
                     {children}
                 </Dialog>
             ) : (
