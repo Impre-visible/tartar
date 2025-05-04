@@ -1,14 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
 
 import useMediaQuery from "@/hooks/use-media-query"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Drawer, DrawerContent, DrawerFooter, DrawerTrigger } from "@/components/ui/drawer"
 import { Button } from "@/components/ui/button"
 
-// Contexte pour partager l'état et les fonctions entre les composants
 type ResponsiveDrawerDialogContextType = {
     open: boolean
     onOpenChange: (open: boolean) => void
@@ -27,7 +25,6 @@ function useResponsiveDrawerDialog() {
     return context
 }
 
-// Composant principal
 export function ResponsiveDrawerDialog({
     children,
     title,
@@ -80,7 +77,6 @@ export function ResponsiveDrawerDialog({
     )
 }
 
-// Composant Trigger
 export function ResponsiveDrawerDialogTrigger({
     children,
     asChild = false,
@@ -90,24 +86,21 @@ export function ResponsiveDrawerDialogTrigger({
 }) {
     const { isDesktop } = useResponsiveDrawerDialog()
 
-    const Comp = asChild ? Slot : Button
-
     if (isDesktop) {
         return (
-            <DialogTrigger asChild>
+            <DialogTrigger asChild {...props}>
                 {children}
             </DialogTrigger>
         )
     }
 
     return (
-        <DrawerTrigger asChild>
+        <DrawerTrigger asChild {...props}>
             {children}
         </DrawerTrigger>
     )
 }
 
-// Composant Content
 export function ResponsiveDrawerDialogContent({
     children,
     title,
@@ -138,7 +131,7 @@ export function ResponsiveDrawerDialogContent({
 
     if (isDesktop) {
         return (
-            <DialogContent className={`sm:max-w-[425px] ${className}`} {...props}>
+            <DialogContent className={`sm:max-w-[800px] ${className}`} {...props}>
                 {content}
             </DialogContent>
         )

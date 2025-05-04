@@ -1,18 +1,31 @@
 import { PlusIcon } from "lucide-react";
-
 import { useGeolocated } from "react-geolocated";
-
 import { Button } from "./ui/button";
-import { Label } from "./ui/label";
-import { DefaultSearchResult, SearchInput } from "./ui/search-input";
+import { Slider } from "@/components/ui/slider"
 
+import { DefaultSearchResult, SearchInput } from "./ui/search-input";
 import { ResponsiveDrawerDialog, ResponsiveDrawerDialogContent, ResponsiveDrawerDialogTrigger } from "./ui/responsive-dialog";
 import { GooglePlaceResult } from "@/types";
 import { useState } from "react";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
+
+import { PriceInput } from "./ui/price-input";
+
+const tartarSchema = z.object({
+    restaurant: z.string().min(1, "Veuillez sélectionner un restaurant"),
+    currency: z.string().min(1, "Veuillez sélectionner une devise"),
+    price: z.number().min(0, "Le prix doit être positif"),
+    texture: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+    taste: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+    presentation: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+    totalScore: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+});
 
 function AddTartar() {
     const [results, setResults] = useState<DefaultSearchResult[]>([]);
-    const [selectedRestaurant, setSelectedRestaurant] = useState<DefaultSearchResult | null>(null);
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
@@ -36,7 +49,26 @@ function AddTartar() {
         },
     });
 
+    const form = useForm({
+        resolver: zodResolver(tartarSchema),
+        defaultValues: {
+            restaurant: "",
+            currency: "eur",
+            price: 2.5,
+            texture: 2.5,
+            taste: 2.5,
+            presentation: 2.5,
+            totalScore: 2.5,
+        },
+    });
+
     const handleOpenChange = (open: boolean) => {
+        if (!open) {
+            // reset the state when the dialog is closed
+            setResults([]);
+            form.reset();
+            return;
+        }
         // If it's open, get the lat/long of the client, to get the 10 closest restaurants/bars
         if (!isGeolocationAvailable) {
             console.error("Geolocation is not available");
@@ -62,6 +94,20 @@ function AddTartar() {
         return formatted_address;
     };
 
+    const onSubmit = (data: z.infer<typeof tartarSchema>) => {
+        const totalScore = (data.texture + data.taste + data.presentation) / 3;
+        console.log("Tartar data is valid:", data);
+        console.log("Total Score:", totalScore);
+    };
+
+    const handleAverageNote = () => {
+        const texture = form.getValues("texture");
+        const taste = form.getValues("taste");
+        const presentation = form.getValues("presentation");
+        const totalScore = (texture + taste + presentation) / 3;
+        form.setValue("totalScore", totalScore);
+    }
+
     return (
         <ResponsiveDrawerDialog onOpenChange={handleOpenChange} title="Ajouter un tartare">
             <ResponsiveDrawerDialogTrigger>
@@ -77,38 +123,184 @@ function AddTartar() {
                     <p className="mt-4 text-sm text-muted-foreground">
                         Créez votre propre tartare en ajoutant vos ingrédients préférés.
                     </p>
-                    <div className="w-full max-w-sm mt-6">
-                        <Label
-                            htmlFor="restaurant-search"
-                        >
-                            Rechercher un restaurant
-                        </Label>
-                        <SearchInput
-                            className="mt-2"
-                            placeholder="Nom du restaurant..."
-                            onSearch={async (query) => {
-                                if (!query) {
-                                    setResults([]);
-                                    return;
-                                }
-                                const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?query=${query}`);
-                                const json = await data.json();
-                                const places = Array.isArray(json) ? json as GooglePlaceResult[] : [];
-                                setResults(places.map((place) => ({
-                                    id: place.place_id,
-                                    text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
-                                })))
-                            }}
-                            results={results}
-                            onItemSelect={(item) => {
-                                setSelectedRestaurant(item);
-                                setResults([]);
-                            }}
-                        />
-                    </div>
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full mt-6">
+                            <FormField
+                                control={form.control}
+                                name="restaurant"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Rechercher un restaurant</FormLabel>
+                                        <FormControl>
+                                            <SearchInput
+                                                {...field}
+                                                className="mt-2"
+                                                placeholder="Nom du restaurant..."
+                                                onSearch={async (query) => {
+                                                    if (!query) {
+                                                        setResults([]);
+                                                        return;
+                                                    }
+                                                    const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?query=${query}`);
+                                                    const json = await data.json();
+                                                    const places = Array.isArray(json) ? json as GooglePlaceResult[] : [];
+                                                    setResults(places.map((place) => ({
+                                                        id: place.place_id,
+                                                        text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
+                                                    })))
+                                                }}
+                                                results={results}
+                                                onItemSelect={(item) => {
+                                                    field.onChange(JSON.stringify(item));
+                                                    setResults([]);
+                                                }}
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="price"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Prix</FormLabel>
+                                        <FormControl>
+                                            <PriceInput
+                                                onAmountChange={(value) => {
+                                                    console.log("Value: ", value);
+                                                    field.onChange(value);
+                                                }}
+                                                onCurrencyChange={(value) => {
+                                                    form.setValue("currency", value);
+                                                }}
+                                                initialAmount={field.value}
+                                                initialCurrency="eur"
+                                                searchCurrencyEmptyText="Aucune devise trouvée"
+                                                searchCurrencyText="Rechercher une devise..."
+                                            />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="texture"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Note pour la texture</FormLabel>
+                                        <FormControl >
+                                            <section className="flex items-center gap-4">
+                                                <Slider
+                                                    defaultValue={[0]}
+                                                    min={0}
+                                                    max={5}
+                                                    step={0.25}
+                                                    value={[field.value]}
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value[0]);
+                                                        handleAverageNote();
+                                                    }}
+                                                />
+                                                <span>
+                                                    {field.value.toFixed(2)}/5
+                                                </span>
+                                            </section>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="taste"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Note pour le goût</FormLabel>
+                                        <FormControl>
+                                            <section className="flex items-center gap-4">
+                                                <Slider
+                                                    defaultValue={[0]}
+                                                    min={0}
+                                                    max={5}
+                                                    step={0.25}
+                                                    value={[field.value]}
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value[0]);
+                                                        handleAverageNote();
+                                                    }}
+                                                />
+                                                <span>
+                                                    {field.value.toFixed(2)}/5
+                                                </span>
+                                            </section>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="presentation"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Note pour la présentation</FormLabel>
+                                        <FormControl>
+                                            <section className="flex items-center gap-4">
+                                                <Slider
+                                                    defaultValue={[0]}
+                                                    min={0}
+                                                    max={5}
+                                                    step={0.25}
+                                                    value={[field.value]}
+                                                    onValueChange={(value) => {
+                                                        field.onChange(value[0]);
+                                                        handleAverageNote();
+                                                    }}
+                                                />
+                                                <span>
+                                                    {field.value.toFixed(2)}/5
+                                                </span>
+                                            </section>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="totalScore"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Note totale</FormLabel>
+                                        <FormControl>
+                                            <section className="flex items-center gap-4">
+                                                <Slider
+                                                    defaultValue={[0]}
+                                                    min={0}
+                                                    max={5}
+                                                    step={0.25}
+                                                    value={[field.value]}
+                                                    disabled
+                                                />
+                                                <span>
+                                                    {field.value.toFixed(2)}/5
+                                                </span>
+                                            </section>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit">Soumettre</Button>
+                        </form>
+                    </Form>
                 </section>
             </ResponsiveDrawerDialogContent>
         </ResponsiveDrawerDialog>
     );
 }
+
 export default AddTartar;

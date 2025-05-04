@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect, useRef, type ReactNode } from "react"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -37,9 +35,9 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
     resultsClassName,
 }: SearchInputProps<T>) {
     const [query, setQuery] = useState("")
-    const [showResults, setShowResults] = useState(false)
+    const [showResults, setShowResults] = useState(true)
     const [selectedIndex, setSelectedIndex] = useState(-1)
-    const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null)
+    const searchTimeoutRef = useRef<number | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const resultsRef = useRef<HTMLDivElement>(null)
 
@@ -48,7 +46,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
             clearTimeout(searchTimeoutRef.current)
         }
 
-        searchTimeoutRef.current = setTimeout(() => {
+        searchTimeoutRef.current = window.setTimeout(() => {
             onSearch(query)
         }, debounceTime)
 
@@ -78,7 +76,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
     }, [])
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (!showResults || results.length === 0) return
+        if (!results.length) return
 
         if (e.key === "ArrowDown") {
             e.preventDefault()
@@ -89,9 +87,6 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
         } else if (e.key === "Enter" && selectedIndex >= 0) {
             e.preventDefault()
             handleItemSelect(results[selectedIndex])
-        } else if (e.key === "Escape") {
-            e.preventDefault()
-            setShowResults(false)
         }
     }
 
@@ -119,7 +114,6 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
                 value={query}
                 onChange={(e) => {
                     setQuery(e.target.value)
-                    setShowResults(true)
                 }}
                 onFocus={() => setShowResults(true)}
                 onKeyDown={handleKeyDown}
