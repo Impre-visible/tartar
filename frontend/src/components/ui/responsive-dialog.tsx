@@ -91,18 +91,14 @@ export function ResponsiveDrawerDialogTrigger({
     if (isDesktop) {
         return (
             <DialogTrigger asChild>
-                <Comp variant="outline" {...props}>
-                    {children}
-                </Comp>
+                {children}
             </DialogTrigger>
         )
     }
 
     return (
         <DrawerTrigger asChild>
-            <Comp variant="outline" {...props}>
-                {children}
-            </Comp>
+            {children}
         </DrawerTrigger>
     )
 }
