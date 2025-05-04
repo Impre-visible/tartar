@@ -294,7 +294,7 @@ function AddTartar() {
                                     </FormItem>
                                 )}
                             />
-                            <Button type="submit">Soumettre</Button>
+                            <Button type="submit" className="w-full md:w-auto md:float-right">Soumettre</Button>
                         </form>
                     </Form>
                 </section>
