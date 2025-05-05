@@ -11,6 +11,7 @@ type ResponsiveDrawerDialogContextType = {
     open: boolean
     onOpenChange: (open: boolean) => void
     isDesktop: boolean
+    title?: string
 }
 
 const ResponsiveDrawerDialogContext = React.createContext<ResponsiveDrawerDialogContextType | undefined>(undefined)
@@ -48,28 +49,32 @@ export function ResponsiveDrawerDialog({
     )
 
     React.useEffect(() => {
-        setOpen(open)
-    }, [open])
+        if (open !== _open) {
+            setOpen(open)
+        }
+    }, [open, _open])
 
     const contextValue = React.useMemo(
         () => ({
             title,
-            open: _open,
+            open,
             onOpenChange: handleOpenChange,
             isDesktop,
         }),
-        [_open, handleOpenChange, isDesktop],
+        [open, handleOpenChange, isDesktop, title],
     )
 
     return (
         <ResponsiveDrawerDialogContext.Provider value={contextValue}>
             {isDesktop ? (
-                <Dialog open={_open} onOpenChange={handleOpenChange}>
-                    <section className="hidden"><DialogTitle>{title}</DialogTitle></section>
+                <Dialog open={open} onOpenChange={handleOpenChange}>
+                    <section className="hidden">
+                        <DialogTitle>{title}</DialogTitle>
+                    </section>
                     {children}
                 </Dialog>
             ) : (
-                <Drawer open={_open} onOpenChange={handleOpenChange}>
+                <Drawer open={open} onOpenChange={handleOpenChange}>
                     {children}
                 </Drawer>
             )}
@@ -113,15 +118,19 @@ export function ResponsiveDrawerDialogContent({
     description?: string
     asChild?: boolean
 }) {
-    const { isDesktop } = useResponsiveDrawerDialog()
+    const { isDesktop, onOpenChange, title: contextTitle } = useResponsiveDrawerDialog()
+
+    const handleClose = () => {
+        onOpenChange(false)
+    }
 
     const content = asChild ? (
         children
     ) : (
         <>
-            {(title || description) && (
+            {(title || description || contextTitle) && (
                 <div className={isDesktop ? "mb-4" : "px-4 pb-0 pt-4"}>
-                    {title && <h2 className="text-lg font-semibold">{title}</h2>}
+                    {title || contextTitle ? <h2 className="text-lg font-semibold">{title || contextTitle}</h2> : null}
                     {description && <p className="text-sm text-muted-foreground">{description}</p>}
                 </div>
             )}
@@ -142,7 +151,9 @@ export function ResponsiveDrawerDialogContent({
             <DrawerContent className={className} {...props}>
                 {content}
                 <DrawerFooter className="pt-2">
-                    <Button variant="outline">Retour</Button>
+                    <Button variant="outline" onClick={handleClose}>
+                        Retour
+                    </Button>
                 </DrawerFooter>
             </DrawerContent>
         </>
