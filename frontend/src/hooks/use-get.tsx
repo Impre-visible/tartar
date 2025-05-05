@@ -25,7 +25,7 @@ export function useGet<T = any>(url: string, options?: RequestInit): UseGetResul
 
         const fetchData = async () => {
             try {
-                const response = await fetch(url, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/api${url}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
