@@ -14,23 +14,20 @@ datasource db {
 }
 
 model Restaurant {
-  id                  String   @id @default(nanoid())
-  name                String
-  street_number       String // 4
-  route               String // Place de la République
-  locality            String // Paris
-  administrative_area String // administrative_area_level_2 (Île-de-France)
-  postal_code         String // 75010
-  country             String // country (France)
-  Tartar              Tartar[]
+  id        String   @id @default(nanoid())
+  placeId   String   @unique
+  name      String
+  address   String
+  latitude  Float
+  longitude Float
+  Tartar    Tartar[]
 }
 
 model Tartar {
   id                  String     @id @default(nanoid())
-  name                String
-  description         String
-  image               String
   price               Float
+  currency            String
+  usd_price           Float
   taste_rating        Float      @default(0) // Rating for taste
   texture_rating      Float      @default(0) // Rating for texture
   presentation_rating Float      @default(0) // Rating for presentation
