@@ -3,8 +3,8 @@
 # node files
 package-lock.json
 
-# prisma generated files
-src/app/generated
+# prisma migrations
+backend/prisma/migrations
 
 # dependencies
 /node_modules
