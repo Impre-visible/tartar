@@ -159,7 +159,6 @@ function AddTartar() {
                                         <FormControl>
                                             <SearchInput
                                                 {...field}
-                                                className="mt-2"
                                                 placeholder="Nom du restaurant..."
                                                 onSearch={async (query) => {
                                                     if (!query) {
