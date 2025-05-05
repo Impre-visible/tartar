@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Restaurant } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CreateRestaurantDto } from '../dto/createRestaurantDto';
 import { SearchRestaurantsDto } from '../dto/searchRestaurantsDto';
 
 @Injectable()
@@ -44,11 +43,5 @@ export class RestaurantService {
         const data = await response.json() as GooglePlaceResponse
 
         return data.results
-    }
-
-    async createOne(createRestaurantDto: CreateRestaurantDto): Promise<Restaurant> {
-        return await this.prisma.restaurant.create({
-            data: createRestaurantDto
-        })
     }
 }

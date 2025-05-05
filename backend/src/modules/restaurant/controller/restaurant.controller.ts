@@ -1,6 +1,5 @@
 import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { RestaurantService } from '../service/restaurant.service';
-import { CreateRestaurantDto } from '../dto/createRestaurantDto';
 import { SearchRestaurantsDto } from '../dto/searchRestaurantsDto';
 
 @Controller('restaurant')
@@ -15,10 +14,5 @@ export class RestaurantController {
     @Get('search')
     search(@Query() query: SearchRestaurantsDto) {
         return this.restaurantService.search(query);
-    }
-
-    @Post()
-    create(@Body() createRestaurantDto: CreateRestaurantDto) {
-        return this.restaurantService.createOne(createRestaurantDto);
     }
 }
