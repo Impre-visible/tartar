@@ -1,5 +1,7 @@
 "use client"
 
+import type React from "react"
+
 import { useState, useEffect, useRef, type ReactNode } from "react"
 import { Input } from "@/components/ui/input"
 import { cn } from "@/lib/utils"
@@ -40,6 +42,11 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
     const searchTimeoutRef = useRef<number | null>(null)
     const inputRef = useRef<HTMLInputElement>(null)
     const resultsRef = useRef<HTMLDivElement>(null)
+    const onSearchRef = useRef(onSearch)
+
+    useEffect(() => {
+        onSearchRef.current = onSearch
+    }, [onSearch])
 
     useEffect(() => {
         if (searchTimeoutRef.current) {
@@ -47,7 +54,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
         }
 
         searchTimeoutRef.current = window.setTimeout(() => {
-            onSearch(query)
+            onSearchRef.current(query)
         }, debounceTime)
 
         return () => {
@@ -55,7 +62,7 @@ export function SearchInput<T extends DefaultSearchResult = DefaultSearchResult>
                 clearTimeout(searchTimeoutRef.current)
             }
         }
-    }, [query, debounceTime, onSearch])
+    }, [query, debounceTime]) // Removed onSearch from dependencies
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
