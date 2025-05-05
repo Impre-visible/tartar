@@ -3,7 +3,7 @@ import { useGeolocated } from "react-geolocated";
 import { Button } from "./ui/button";
 import { Slider } from "@/components/ui/slider"
 
-import { DefaultSearchResult, SearchInput } from "./ui/search-input";
+import { SearchInput } from "./ui/search-input";
 import { ResponsiveDrawerDialog, ResponsiveDrawerDialogContent, ResponsiveDrawerDialogTrigger } from "./ui/responsive-dialog";
 import { GooglePlaceResult } from "@/types";
 import { useCallback, useState } from "react";
@@ -28,7 +28,7 @@ const tartarSchema = z.object({
 });
 
 function AddTartar() {
-    const [results, setResults] = useState<DefaultSearchResult[]>([]);
+    const [results, setResults] = useState<GooglePlaceResult[]>([]);
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
@@ -42,10 +42,8 @@ function AddTartar() {
             console.log("Position: ", position);
             const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`);
             const json = await data.json() as GooglePlaceResult[];
-            setResults(json.map((place) => ({
-                id: place.place_id,
-                text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
-            })))
+            const places = Array.isArray(json) ? json : [];
+            setResults(places);
         },
         onError: (error) => {
             console.error("Geolocation error: ", error);
@@ -56,6 +54,7 @@ function AddTartar() {
         resolver: zodResolver(tartarSchema),
         defaultValues: {
             restaurant: "",
+            createdAt: new Date(),
             currency: "eur",
             price: 0,
             texture: 2.5,
@@ -67,12 +66,11 @@ function AddTartar() {
 
     const handleOpenChange = (open: boolean) => {
         if (!open) {
-            // reset the state when the dialog is closed
             setResults([]);
             form.reset();
             return;
         }
-        // If it's open, get the lat/long of the client, to get the 10 closest restaurants/bars
+
         if (!isGeolocationAvailable) {
             console.error("Geolocation is not available");
             return;
@@ -97,10 +95,29 @@ function AddTartar() {
         return formatted_address;
     };
 
-    const onSubmit = (data: z.infer<typeof tartarSchema>) => {
-        const totalScore = (data.texture + data.taste + data.presentation) / 3;
-        console.log("Tartar data is valid:", data);
-        console.log("Total Score:", totalScore);
+    const onSubmit = async (data: z.infer<typeof tartarSchema>) => {
+        await fetch(`${import.meta.env.VITE_API_URL}/api/tartar`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (response.ok) {
+                    console.log("Tartar added successfully");
+                    form.reset();
+                } else {
+                    console.error("Error adding tartar: ", response.statusText);
+                }
+            })
+            .catch((error) => {
+                console.error("Error adding tartar: ", error);
+            });
+
+        handleOpenChange(false);
+        form.reset();
+        setResults([]);
     };
 
     const handleAverageNote = () => {
@@ -152,14 +169,18 @@ function AddTartar() {
                                                     const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?query=${query}`);
                                                     const json = await data.json();
                                                     const places = Array.isArray(json) ? json as GooglePlaceResult[] : [];
-                                                    setResults(places.map((place) => ({
-                                                        id: place.place_id,
-                                                        text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
-                                                    })))
+                                                    setResults(places)
                                                 }}
-                                                results={results}
+                                                results={results.map((place) => ({
+                                                    id: place.place_id,
+                                                    text: `${place.name} (${municipality(place.formatted_address)})`, // (${place.vicinity})
+                                                }))}
                                                 onItemSelect={(item) => {
-                                                    field.onChange(JSON.stringify(item));
+                                                    let place = results.find((place) => place.place_id === item.id);
+                                                    if (!place) {
+                                                        return;
+                                                    }
+                                                    field.onChange(JSON.stringify(place));
                                                     setResults([]);
                                                 }}
                                             />
@@ -175,7 +196,16 @@ function AddTartar() {
                                     <FormItem>
                                         <FormLabel>Date de dégustation</FormLabel>
                                         <FormControl>
-                                            <DatePicker {...field} defaultValue={new Date()} locale={fr} />
+                                            <DatePicker
+                                                defaultValue={new Date()}
+                                                locale={fr}
+
+                                                value={field.value}
+                                                onChange={(date) => {
+                                                    field.onChange(date);
+                                                }}
+
+                                            />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
