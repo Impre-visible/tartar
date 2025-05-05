@@ -13,9 +13,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "./ui/form";
 
 import { PriceInput } from "./ui/price-input";
+import { DatePicker } from "./ui/date-picker";
+import { fr } from "date-fns/locale";
 
 const tartarSchema = z.object({
     restaurant: z.string().min(1, "Veuillez sélectionner un restaurant"),
+    createdAt: z.date().min(new Date(0), "Veuillez sélectionner une date"),
     currency: z.string().min(1, "Veuillez sélectionner une devise"),
     price: z.number().min(0, "Le prix doit être positif"),
     texture: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
@@ -126,10 +129,10 @@ function AddTartar() {
                 <section className="flex flex-col items-center justify-center h-full">
                     <h2 className="text-2xl font-bold">Ajouter un tartare</h2>
                     <p className="mt-4 text-sm text-muted-foreground">
-                        Créez votre propre tartare en ajoutant vos ingrédients préférés.
+                        Remplissez le formulaire ci-dessous pour ajouter un tartare à votre liste.
                     </p>
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 w-full mt-6">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-2 md:gap-4 w-full mt-6">
                             <FormField
                                 control={form.control}
                                 name="restaurant"
@@ -160,6 +163,19 @@ function AddTartar() {
                                                     setResults([]);
                                                 }}
                                             />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="createdAt"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>Date de dégustation</FormLabel>
+                                        <FormControl>
+                                            <DatePicker {...field} defaultValue={new Date()} locale={fr} />
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
