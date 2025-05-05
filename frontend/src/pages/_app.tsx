@@ -1,4 +1,3 @@
-import AddTartar from "@/components/add-tartar";
 import { Outlet } from 'react-router'
 
 export default function RootLayout() {
@@ -9,7 +8,6 @@ export default function RootLayout() {
             </header>
             <main className="flex flex-col items-center justify-center h-full w-full">
                 <Outlet />
-                <AddTartar />
             </main>
         </section>
     );
