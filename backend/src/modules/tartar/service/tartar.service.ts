@@ -10,7 +10,11 @@ export class TartarService {
     constructor(private prisma: PrismaService) { }
 
     async getAll(): Promise<Tartar[]> {
-        return await this.prisma.tartar.findMany();
+        return await this.prisma.tartar.findMany({
+            include: {
+                restaurant: true
+            }
+        });
     }
 
     async createOne(data: CreateTartarDto): Promise<Tartar> {
