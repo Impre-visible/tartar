@@ -27,7 +27,7 @@ export default function Index() {
                     <TabsContent value="map"></TabsContent>
                 </Tabs>
             </section>
-            <AddTartar />
+            <AddTartar refetch={refetch} />
         </>
     )
 }
