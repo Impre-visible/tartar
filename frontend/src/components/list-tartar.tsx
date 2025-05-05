@@ -10,7 +10,7 @@ const ListTartar: React.FC<ListTartarProps> = ({ tartars = [] }) => {
     if (tartars.length === 0) return <div>Aucun tartar trouvé</div>;
 
     return (
-        <div className="tartar-list-container">
+        <div className="h-full pb-4">
             <ul className="flex flex-col gap-4">
                 {tartars.map((tartar) => (
                     <li key={tartar.id} >
