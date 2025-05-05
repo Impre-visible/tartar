@@ -16,6 +16,9 @@ import { PriceInput } from "./ui/price-input";
 import { DatePicker } from "./ui/date-picker";
 import { fr } from "date-fns/locale";
 
+import { usePost } from "@/hooks/use-post";
+import { Tartar } from "@/types/tartar";
+
 const tartarSchema = z.object({
     restaurant: z.string().min(1, "Veuillez sélectionner un restaurant"),
     createdAt: z.date().min(new Date(0), "Veuillez sélectionner une date"),
@@ -27,8 +30,13 @@ const tartarSchema = z.object({
     totalScore: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
 });
 
-function AddTartar() {
+function AddTartar({ refetch }: { refetch?: () => void }) {
+    const [isOpen, setIsOpen] = useState(false);
     const [results, setResults] = useState<GooglePlaceResult[]>([]);
+
+    const {
+        execute: createTartar,
+    } = usePost<Tartar, z.infer<typeof tartarSchema>>("/tartar");
 
     const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
         positionOptions: {
@@ -65,6 +73,7 @@ function AddTartar() {
     });
 
     const handleOpenChange = (open: boolean) => {
+        setIsOpen(open);
         if (!open) {
             setResults([]);
             form.reset();
@@ -96,28 +105,13 @@ function AddTartar() {
     };
 
     const onSubmit = async (data: z.infer<typeof tartarSchema>) => {
-        await fetch(`${import.meta.env.VITE_API_URL}/api/tartar`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        })
-            .then((response) => {
-                if (response.ok) {
-                    console.log("Tartar added successfully");
-                    form.reset();
-                } else {
-                    console.error("Error adding tartar: ", response.statusText);
-                }
-            })
-            .catch((error) => {
-                console.error("Error adding tartar: ", error);
-            });
-
-        handleOpenChange(false);
-        form.reset();
+        await createTartar(data);
+        if (refetch) {
+            refetch();
+        }
+        setIsOpen(false);
         setResults([]);
+        form.reset();
     };
 
     const handleAverageNote = () => {
@@ -134,7 +128,7 @@ function AddTartar() {
     }, [form]);
 
     return (
-        <ResponsiveDrawerDialog onOpenChange={handleOpenChange} title="Ajouter un tartare">
+        <ResponsiveDrawerDialog onOpenChange={handleOpenChange} open={isOpen} title="Ajouter un tartare">
             <ResponsiveDrawerDialogTrigger>
                 <section className="fixed bottom-6 right-6">
                     <Button variant="default" className="w-12 h-12 rounded-full">
