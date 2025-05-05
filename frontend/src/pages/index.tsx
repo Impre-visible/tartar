@@ -1,8 +1,29 @@
+import ListTartar from "@/components/list-tartar"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useGet } from "@/hooks/use-get"
+import { Tartar } from "@/types/tartar"
+import { TabsContent } from "@radix-ui/react-tabs"
+
 export default function Index() {
+    const {
+        data: tartars,
+        isLoading: isLoading,
+        error: error,
+        refetch: refetchTodos,
+    } = useGet<Tartar[]>("/tartar")
+
     return (
-        <div className="flex flex-col items-center justify-center h-full w-full">
-            <h1 className="text-4xl font-bold">Welcome to the Vite + React + Tailwind CSS + Generouted App!</h1>
-            <p className="mt-4 text-lg">This is a simple example of a Vite app with React, Tailwind CSS, and Generouted.</p>
-        </div>
+        <section className="h-full px-2 md:px-8 w-full">
+            <Tabs defaultValue="list" className="w-full">
+                <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="list">Liste</TabsTrigger>
+                    <TabsTrigger value="map">Carte</TabsTrigger>
+                </TabsList>
+                <TabsContent value="list">
+                    <ListTartar tartars={tartars || []} />
+                </TabsContent>
+                <TabsContent value="map"></TabsContent>
+            </Tabs>
+        </section>
     )
 }
