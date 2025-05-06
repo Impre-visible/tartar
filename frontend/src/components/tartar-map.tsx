@@ -10,9 +10,7 @@ interface TartarMapProps {
 
 const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
     const { theme } = useTheme();
-    const [mapStyle, setMapStyle] = useState(
-        'https://tiles.openfreemap.org/styles/positron'
-    );
+    const [mapStyle, setMapStyle] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'https://tiles.openfreemap.org/styles/dark' : 'https://tiles.openfreemap.org/styles/positron');
 
     const [viewport, _setViewport] = useState({
         latitude: 46.8566,
@@ -22,16 +20,11 @@ const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
         height: '100%',
     });
 
-    useEffect(() => {
-        let systemTheme = 'light';
+    const handleThemeChange = () => {
+        let systemTheme = theme;
 
         if (theme === 'system') {
-            systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
-                .matches
-                ? 'dark'
-                : 'light';
-        } else {
-            systemTheme = theme;
+            systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
 
         if (systemTheme === 'dark') {
@@ -39,10 +32,11 @@ const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
         } else {
             setMapStyle('https://tiles.openfreemap.org/styles/positron');
         }
-    }, [theme]);
+    }
 
-    //light style is positron
-    //dark style is dark
+    useEffect(() => {
+        handleThemeChange();
+    }, [theme]);
 
     return (
         <Map
