@@ -9,8 +9,8 @@ import { TabsContent } from "@radix-ui/react-tabs"
 export default function Index() {
     const {
         data: tartars,
-        isLoading: isLoading,
-        error: error,
+        isLoading: _isLoading,
+        error: _error,
         refetch: refetch,
     } = useGet<Tartar[]>("/tartar")
 
