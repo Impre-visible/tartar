@@ -81,7 +81,6 @@ export class TartarService {
                 taste_rating: taste,
                 presentation_rating: presentation,
                 total_rating: totalScore,
-
             }
         })
 
