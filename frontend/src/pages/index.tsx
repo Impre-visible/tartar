@@ -1,5 +1,6 @@
 import AddTartar from "@/components/add-tartar"
 import TartarList from "@/components/tartar-list"
+import TartarMap from "@/components/tartar-map"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
@@ -16,7 +17,7 @@ export default function Index() {
     return (
         <>
             <section className="h-full px-2 md:px-8 w-full">
-                <Tabs defaultValue="list" className="w-full">
+                <Tabs defaultValue="list" className="w-full h-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="list">Liste</TabsTrigger>
                         <TabsTrigger value="map">Carte</TabsTrigger>
@@ -24,7 +25,9 @@ export default function Index() {
                     <TabsContent value="list">
                         <TartarList tartars={tartars || []} />
                     </TabsContent>
-                    <TabsContent value="map"></TabsContent>
+                    <TabsContent value="map" className="h-full">
+                        <TartarMap tartars={tartars || []} />
+                    </TabsContent>
                 </Tabs>
             </section>
             <AddTartar refetch={refetch} />
