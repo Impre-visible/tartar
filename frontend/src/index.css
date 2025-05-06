@@ -114,6 +114,10 @@
   @apply hidden;
 }
 
+div[data-radix-popper-content-wrapper] {
+  @apply pointer-events-auto;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
