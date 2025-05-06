@@ -4,8 +4,12 @@ import TartarMap from "@/components/tartar-map"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/animated-tabs"
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
+import { useState } from "react"
+import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 
 export default function Index() {
+    const [selectedTartar, setSelectedTartar] = useState<Tartar | null>(null)
+
     const {
         data: tartars,
         isLoading: _isLoading,
@@ -22,14 +26,27 @@ export default function Index() {
                         <TabsTrigger value="map">Carte</TabsTrigger>
                     </TabsList>
                     <TabsContent value="list">
-                        <TartarList tartars={tartars || []} />
+                        <TartarList tartars={tartars || []} setSelectedTartar={setSelectedTartar} />
                     </TabsContent>
                     <TabsContent value="map" className="h-full">
-                        <TartarMap tartars={tartars || []} />
+                        <TartarMap tartars={tartars || []} setSelectedTartar={setSelectedTartar} />
                     </TabsContent>
                 </Tabs>
             </section>
             <AddTartar refetch={refetch} />
+            <Sheet open={!!selectedTartar} onOpenChange={() => setSelectedTartar(null)}>
+                <SheetContent>
+                    <SheetHeader>
+                        <SheetTitle>
+                            {selectedTartar?.restaurant.name}
+                        </SheetTitle>
+                        <SheetDescription>
+                            {selectedTartar?.restaurant.address}
+                        </SheetDescription>
+                    </SheetHeader>
+                </SheetContent>
+            </Sheet>
+
         </>
     )
 }

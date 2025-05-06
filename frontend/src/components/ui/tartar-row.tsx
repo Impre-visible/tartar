@@ -2,9 +2,9 @@ import { Tartar } from "@/types/tartar";
 import { MapPin, Star } from 'lucide-react';
 import { currencies } from "@/lib/constants/currencies";
 
-export function TartarRow({ tartar }: { tartar: Tartar }) {
+export function TartarRow({ tartar, onClick }: { tartar: Tartar; onClick: () => void }) {
     return (
-        <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+        <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-md transition-shadow" onClick={onClick}>
             <div className="p-6 space-y-4">
                 <div className="flex flex-col justify-between items-between">
                     <div className="flex flex-row justify-between items-center">
