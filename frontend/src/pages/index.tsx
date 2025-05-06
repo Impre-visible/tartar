@@ -1,10 +1,9 @@
 import AddTartar from "@/components/add-tartar"
 import TartarList from "@/components/tartar-list"
 import TartarMap from "@/components/tartar-map"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/animated-tabs"
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
-import { TabsContent } from "@radix-ui/react-tabs"
 
 export default function Index() {
     const {
