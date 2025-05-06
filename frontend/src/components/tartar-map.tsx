@@ -3,12 +3,14 @@ import { Map, Marker } from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Tartar } from '@/types/tartar';
 import { useTheme } from './theme-provider';
+import CustomMarker from './marker';
 
 interface TartarMapProps {
     tartars: Tartar[];
+    setSelectedTartar: (tartar: Tartar | null) => void;
 }
 
-const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
+const TartarMap: React.FC<TartarMapProps> = ({ tartars = [], setSelectedTartar }) => {
     const { theme } = useTheme();
     const [mapStyle, setMapStyle] = useState(window.matchMedia('(prefers-color-scheme: dark)').matches ? 'https://tiles.openfreemap.org/styles/dark' : 'https://tiles.openfreemap.org/styles/positron');
 
@@ -50,13 +52,18 @@ const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
                     latitude={tartar.restaurant.latitude}
                     longitude={tartar.restaurant.longitude}
                 >
-                    <div
-                        style={{
-                            width: '20px',
-                            height: '20px',
-                            backgroundColor: 'red',
-                            borderRadius: '50%',
-                            cursor: 'pointer',
+
+                    <CustomMarker
+                        text={tartar.restaurant.name}
+                        description={"Cliquez pour voir les détails"}
+                        onClick={() => {
+                            setSelectedTartar(tartar);
+                            _setViewport({
+                                ...viewport,
+                                latitude: tartar.restaurant.latitude,
+                                longitude: tartar.restaurant.longitude,
+                                zoom: 10,
+                            });
                         }}
                     />
                 </Marker>
