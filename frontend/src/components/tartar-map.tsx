@@ -1,20 +1,45 @@
-import React from 'react';
-import { Map, Marker, Popup } from '@vis.gl/react-maplibre';
+import React, { useEffect, useState } from 'react';
+import { Map, Marker } from '@vis.gl/react-maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Tartar } from '@/types/tartar';
+import { useTheme } from './theme-provider';
 
 interface TartarMapProps {
     tartars: Tartar[];
 }
 
 const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
-    const [viewport, setViewport] = React.useState({
+    const { theme } = useTheme();
+    const [mapStyle, setMapStyle] = useState(
+        'https://tiles.openfreemap.org/styles/positron'
+    );
+
+    const [viewport, _setViewport] = useState({
         latitude: 46.8566,
         longitude: 2.3522,
         zoom: 5.5,
         width: '100%',
         height: '100%',
     });
+
+    useEffect(() => {
+        let systemTheme = 'light';
+
+        if (theme === 'system') {
+            systemTheme = window.matchMedia('(prefers-color-scheme: dark)')
+                .matches
+                ? 'dark'
+                : 'light';
+        } else {
+            systemTheme = theme;
+        }
+
+        if (systemTheme === 'dark') {
+            setMapStyle('https://tiles.openfreemap.org/styles/dark');
+        } else {
+            setMapStyle('https://tiles.openfreemap.org/styles/positron');
+        }
+    }, [theme]);
 
     //light style is positron
     //dark style is dark
@@ -23,7 +48,7 @@ const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
         <Map
             style={{ width: '100%', height: '100%' }}
             initialViewState={viewport}
-            mapStyle='https://tiles.openfreemap.org/styles/positron'
+            mapStyle={mapStyle}
         >
             {tartars.map((tartar) => (
                 <Marker
