@@ -40,7 +40,7 @@ const TartarMap: React.FC<TartarMapProps> = ({ tartars = [] }) => {
 
     return (
         <Map
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%', borderRadius: '0.5rem' }}
             initialViewState={viewport}
             mapStyle={mapStyle}
         >
