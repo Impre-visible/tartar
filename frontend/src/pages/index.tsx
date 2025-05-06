@@ -16,7 +16,7 @@ export default function Index() {
 
     return (
         <>
-            <section className="h-full px-2 md:px-8 w-full">
+            <section className="h-full px-1 md:px-8 w-full">
                 <Tabs defaultValue="list" className="w-full h-full">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="list">Liste</TabsTrigger>
