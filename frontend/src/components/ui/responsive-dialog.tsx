@@ -128,12 +128,6 @@ export function ResponsiveDrawerDialogContent({
         children
     ) : (
         <>
-            {(title || description || contextTitle) && (
-                <div className={isDesktop ? "mb-4" : "px-4 pb-0 pt-4"}>
-                    {title || contextTitle ? <h2 className="text-lg font-semibold">{title || contextTitle}</h2> : null}
-                    {description && <p className="text-sm text-muted-foreground">{description}</p>}
-                </div>
-            )}
             <div className={isDesktop ? "" : "px-4 py-2"}>{children}</div>
         </>
     )
