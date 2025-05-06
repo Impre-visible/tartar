@@ -2,11 +2,11 @@ import { Tartar } from '@/types/tartar';
 import React from 'react';
 import { TartarRow } from './ui/tartar-row';
 
-interface ListTartarProps {
+interface TartarListProps {
     tartars: Tartar[];
 }
 
-const ListTartar: React.FC<ListTartarProps> = ({ tartars = [] }) => {
+const TartarList: React.FC<TartarListProps> = ({ tartars = [] }) => {
     if (tartars.length === 0) return <div>Aucun tartar trouvé</div>;
 
     return (
@@ -22,4 +22,4 @@ const ListTartar: React.FC<ListTartarProps> = ({ tartars = [] }) => {
     );
 };
 
-export default ListTartar;
+export default TartarList;

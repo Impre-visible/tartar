@@ -1,5 +1,5 @@
 import AddTartar from "@/components/add-tartar"
-import ListTartar from "@/components/list-tartar"
+import TartarList from "@/components/tartar-list"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
@@ -22,7 +22,7 @@ export default function Index() {
                         <TabsTrigger value="map">Carte</TabsTrigger>
                     </TabsList>
                     <TabsContent value="list">
-                        <ListTartar tartars={tartars || []} />
+                        <TartarList tartars={tartars || []} />
                     </TabsContent>
                     <TabsContent value="map"></TabsContent>
                 </Tabs>
