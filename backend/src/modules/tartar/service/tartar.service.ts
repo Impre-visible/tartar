@@ -86,4 +86,59 @@ export class TartarService {
 
         return tartar;
     }
+
+    async updateOne(data: CreateTartarDto & { id: string }): Promise<Tartar> {
+        const { id, currency, price, texture, taste, presentation, totalScore } = data;
+
+        if (!id || !currency || price === undefined || texture === undefined ||
+            taste === undefined || presentation === undefined || totalScore === undefined) {
+            console.log(data);
+            throw new Error("Missing required fields");
+        }
+
+        let usdPrice = price;
+        //todo: convert price to usd based on currency
+        let url = `https://api.exchangerate-api.com/v4/latest/${currency}`
+
+        const response = await fetch(url)
+        const currencyJSON = await response.json() as ExchangeRateResponse
+
+        if (!currencyJSON) {
+            throw new Error("Invalid currency");
+        }
+        if (currencyJSON.rates.USD) {
+            usdPrice = price / currencyJSON.rates.USD
+        }
+
+        const tartar = await this.prisma.tartar.update({
+            where: {
+                id
+            },
+            data: {
+                currency,
+                price,
+                usd_price: usdPrice,
+                texture_rating: texture,
+                taste_rating: taste,
+                presentation_rating: presentation,
+                total_rating: totalScore,
+            }
+        })
+
+        return tartar;
+    }
+
+    async deleteOne(id: string): Promise<Tartar> {
+        if (!id) {
+            throw new Error("Missing required fields");
+        }
+
+        const tartar = await this.prisma.tartar.delete({
+            where: {
+                id
+            }
+        })
+
+        return tartar;
+    }
 }

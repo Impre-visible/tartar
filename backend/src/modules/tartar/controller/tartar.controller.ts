@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, Put } from '@nestjs/common';
 import { TartarService } from '../service/tartar.service';
 import { CreateTartarDto } from '../dto/createTartarDto';
 
@@ -14,5 +14,15 @@ export class TartarController {
     @Post()
     async createTartar(@Body() data: CreateTartarDto) {
         return await this.tartarService.createOne(data);
+    }
+
+    @Put()
+    async updateTartar(@Body() data: CreateTartarDto & { id: string }) {
+        return await this.tartarService.updateOne(data);
+    }
+
+    @Delete()
+    async deleteTartar(@Body() data: { id: string }) {
+        return await this.tartarService.deleteOne(data.id);
     }
 }
