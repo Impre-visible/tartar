@@ -9,6 +9,7 @@ export interface Tartar {
     texture_rating: number
     presentation_rating: number
     total_rating: number
+    createdAt: Date
     restaurant: Restaurant
     restaurantId: string
 }
