@@ -14,10 +14,10 @@ import { toast } from "sonner";
 const tartarSchema = z.object({
     currency: z.string().min(1, "Veuillez sélectionner une devise"),
     price: z.number().min(0, "Le prix doit être positif"),
-    texture: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    taste: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    presentation: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    totalScore: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+    texture: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    taste: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    presentation: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    totalScore: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
 });
 
 export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar | null; refetch?: () => void; onOpenChange: () => void }) {
@@ -139,7 +139,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                             <section className="flex items-center gap-4">
                                                 <Slider
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -148,7 +148,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -166,7 +166,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                             <section className="flex items-center gap-4">
                                                 <Slider
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -175,7 +175,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -193,7 +193,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                             <section className="flex items-center gap-4">
                                                 <Slider
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -202,7 +202,7 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -220,13 +220,13 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
                                             <section className="flex items-center gap-4">
                                                 <Slider
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     disabled
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>

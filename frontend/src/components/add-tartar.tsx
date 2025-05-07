@@ -25,10 +25,10 @@ const tartarSchema = z.object({
     createdAt: z.date().min(new Date(0), "Veuillez sélectionner une date"),
     currency: z.string().min(1, "Veuillez sélectionner une devise"),
     price: z.number().min(0, "Le prix doit être positif"),
-    texture: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    taste: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    presentation: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
-    totalScore: z.number().min(0).max(5, "La note doit être entre 0 et 5"),
+    texture: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    taste: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    presentation: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
+    totalScore: z.number().min(0).max(10, "La note doit être entre 0 et 5"),
 });
 
 function AddTartar({ refetch }: { refetch?: () => void }) {
@@ -66,10 +66,10 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
             createdAt: new Date(),
             currency: "eur",
             price: 0,
-            texture: 2.5,
-            taste: 2.5,
-            presentation: 2.5,
-            totalScore: 2.5,
+            texture: 5,
+            taste: 5,
+            presentation: 5,
+            totalScore: 5,
         },
     });
 
@@ -251,7 +251,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                 <Slider
                                                     defaultValue={[0]}
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -260,7 +260,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -279,7 +279,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                 <Slider
                                                     defaultValue={[0]}
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -288,7 +288,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -307,7 +307,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                 <Slider
                                                     defaultValue={[0]}
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     onValueChange={(value) => {
@@ -316,7 +316,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                     }}
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
@@ -335,13 +335,13 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                 <Slider
                                                     defaultValue={[0]}
                                                     min={0}
-                                                    max={5}
+                                                    max={10}
                                                     step={0.25}
                                                     value={[field.value]}
                                                     disabled
                                                 />
                                                 <span>
-                                                    {field.value.toFixed(2)}/5
+                                                    {field.value.toFixed(2)}/10
                                                 </span>
                                             </section>
                                         </FormControl>
