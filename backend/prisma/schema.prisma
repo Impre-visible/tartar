@@ -32,6 +32,7 @@ model Tartar {
   texture_rating      Float      @default(0) // Rating for texture
   presentation_rating Float      @default(0) // Rating for presentation
   total_rating        Float      @default(0) // Overall rating
+  createdAt           DateTime   @default(now())
   restaurant          Restaurant @relation(fields: [restaurantId], references: [id])
   restaurantId        String
 }
