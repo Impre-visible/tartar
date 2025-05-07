@@ -15,8 +15,8 @@ export function TartarRow({ tartar, onClick }: { tartar: Tartar; onClick: () => 
                             </span>
                         </div>
                     </div>
-                    <div className="flex items-center mt-1 text-sm text-muted-foreground">
-                        <MapPin className="h-3.5 w-3.5 mr-1" />
+                    <div className="flex mt-1 text-sm text-muted-foreground">
+                        <MapPin className="mt-[3px] h-3.5 w-3.5 mr-1" />
                         <span>{tartar.restaurant.address}</span>
                     </div>
                 </div>
