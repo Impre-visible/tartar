@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react"
 
-interface UsePutResult<T, P> {
+interface UseDeleteResult<T, P> {
     data: T | null
     isLoading: boolean
     error: Error | null
@@ -16,10 +16,10 @@ interface UsePutResult<T, P> {
  * @param options Fetch request options (optional)
  * @returns An object containing data, loading state, errors, and a function to execute the request
  */
-export function usePut<T = any, P = any>(
+export function useDelete<T = any, P = any>(
     url: string,
     options?: Omit<RequestInit, "method" | "body">,
-): UsePutResult<T, P> {
+): UseDeleteResult<T, P> {
     const [data, setData] = useState<T | null>(null)
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<Error | null>(null)
@@ -31,7 +31,7 @@ export function usePut<T = any, P = any>(
 
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/api${url}`, {
-                    method: "PUT",
+                    method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",
                         ...(options?.headers || {}),
