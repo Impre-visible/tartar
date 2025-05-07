@@ -5,7 +5,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/animated-
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
 import { useState } from "react"
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { ViewTartar } from "@/components/view-tartar"
 
 export default function Index() {
     const [selectedTartar, setSelectedTartar] = useState<Tartar | null>(null)
@@ -34,19 +34,7 @@ export default function Index() {
                 </Tabs>
             </section>
             <AddTartar refetch={refetch} />
-            <Sheet open={!!selectedTartar} onOpenChange={() => setSelectedTartar(null)}>
-                <SheetContent>
-                    <SheetHeader>
-                        <SheetTitle>
-                            {selectedTartar?.restaurant.name}
-                        </SheetTitle>
-                        <SheetDescription>
-                            {selectedTartar?.restaurant.address}
-                        </SheetDescription>
-                    </SheetHeader>
-                </SheetContent>
-            </Sheet>
-
+            <ViewTartar tartar={selectedTartar} onOpenChange={() => setSelectedTartar(null)} />
         </>
     )
 }
