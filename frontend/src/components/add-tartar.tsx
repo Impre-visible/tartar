@@ -18,6 +18,7 @@ import { fr } from "date-fns/locale";
 
 import { usePost } from "@/hooks/use-post";
 import { Tartar } from "@/types/tartar";
+import { toast } from "sonner";
 
 const tartarSchema = z.object({
     restaurant: z.string().min(1, "Veuillez sélectionner un restaurant"),
@@ -105,13 +106,26 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
     };
 
     const onSubmit = async (data: z.infer<typeof tartarSchema>) => {
-        await createTartar(data);
-        if (refetch) {
-            refetch();
-        }
-        setIsOpen(false);
-        setResults([]);
-        form.reset();
+        toast.promise(
+            createTartar(data),
+            {
+                loading: "Création du tartare...",
+                success: () => {
+                    return "Tartare créé avec succès!";
+                },
+                error: (error) => {
+                    return "Erreur lors de la création du tartare: " + error;
+                },
+                finally: () => {
+                    if (refetch) {
+                        refetch();
+                    }
+                    setIsOpen(false);
+                    setResults([]);
+                    form.reset();
+                }
+            }
+        );
     };
 
     const handleAverageNote = () => {
