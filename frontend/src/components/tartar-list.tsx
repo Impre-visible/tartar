@@ -85,9 +85,9 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
     if (tartars.length === 0) return <div>Aucun tartar trouvé</div>
 
     return (
-        <div className="h-full pb-4">
+        <div className="h-full pt-2 pb-4">
             <div className="mb-4 flex flex-wrap items-center gap-2">
-                <div className="mr-2 text-sm font-medium">Trier par:</div>
+                <div className="text-sm font-medium">Trier par:</div>
 
                 <Button
                     variant={sortField === "total_rating" ? "default" : "outline"}
@@ -123,7 +123,7 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
                 </Button>
 
                 <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                    <DropdownMenuTrigger asChild className="hidden md:flex">
                         <Button variant="outline" size="sm" className="ml-auto">
                             <FilterIcon className="mr-2 h-4 w-4" />
                             Filtres
