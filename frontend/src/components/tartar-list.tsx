@@ -80,7 +80,13 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
         return sortDirection === "asc" ? <ArrowUpIcon className="h-4 w-4" /> : <ArrowDownIcon className="h-4 w-4" />
     }
 
-    if (tartars.length === 0) return <div>Aucun tartar trouvé</div>
+    if (tartars.length === 0) return (
+        <section className="flex h-full items-center justify-center rounded-md border border-dashed border-muted p-4">
+            <div className="flex h-full items-center justify-center">
+                <div className="text-lg text-muted-foreground">Aucun tartare trouvé</div>
+            </div>
+        </section>
+    )
 
     return (
         <div className="h-full pt-2 pb-4">
