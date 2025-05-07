@@ -16,14 +16,13 @@ interface MarkerProps {
 
 const CustomMarker: React.FC<MarkerProps> = ({ text, description, onClick, className }) => {
     return (
-
         <HoverCard>
             <HoverCardTrigger onClick={onClick}>
                 <div
                     className={`absolute transform -translate-x-1/2  -translate-y-full cursor-pointer ${className || ''}`}
                 >
                     <div className="flex flex-col items-center ">
-                        <MapPin className="w-8 h-8 text-white fill-neutral-900 border-neutral-0" />
+                        <MapPin className="w-8 h-8 text-neutral-100 fill-neutral-900 border-neutral-0" strokeWidth={1} />
                     </div>
                 </div>
             </HoverCardTrigger>
