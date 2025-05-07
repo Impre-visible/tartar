@@ -33,13 +33,13 @@ export default function Index() {
                         <TabsTrigger value="list">Liste</TabsTrigger>
                         <TabsTrigger value="map">Carte</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="list">
+                    <TabsContent value="list" className="h-[calc(100%-40px)]">
                         <TartarList tartars={tartars || []}
                             setSelectedTartar={setSelectedTartar}
                             setEditTartar={setEditTartar}
                             setDeleteTartar={setDeleteTartar} />
                     </TabsContent>
-                    <TabsContent value="map" className="h-full">
+                    <TabsContent value="map" className="h-[calc(100%-40px)]">
                         <TartarMap tartars={tartars || []} setSelectedTartar={setSelectedTartar} />
                     </TabsContent>
                 </Tabs>
