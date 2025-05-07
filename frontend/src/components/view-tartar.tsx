@@ -18,7 +18,7 @@ export function ViewTartar({
 
     return (
         <Sheet open={!!tartar} onOpenChange={onOpenChange}>
-            <SheetContent className="overflow-y-auto gap-4">
+            <SheetContent className="overflow-y-auto gap-4 pt-4 lg:pt-0">
                 <SheetHeader className="pb-0">
                     <div className="flex items-center justify-between">
                         <SheetTitle className="text-lg font-bold">{tartar.restaurant.name}</SheetTitle>

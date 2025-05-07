@@ -30,9 +30,11 @@ type SortDirection = "asc" | "desc"
 interface TartarListProps {
     tartars: Tartar[]
     setSelectedTartar: (tartar: Tartar | null) => void
+    setEditableTartar: (tartar: Tartar | null) => void
+    setDeleteTartar: (tartar: Tartar | null) => void
 }
 
-const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar }) => {
+const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar, setEditableTartar, setDeleteTartar }) => {
     const [sortField, setSortField] = useState<SortField>("total_rating")
     const [sortDirection, setSortDirection] = useState<SortDirection>("desc")
 
@@ -171,7 +173,7 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
             <ul className="flex flex-col gap-4">
                 {sortedTartars.map((tartar) => (
                     <li key={tartar.id}>
-                        <TartarRow tartar={tartar} onClick={() => setSelectedTartar(tartar)} />
+                        <TartarRow tartar={tartar} onClick={() => setSelectedTartar(tartar)} onEdit={(tartar) => setEditableTartar(tartar)} onDelete={(tartar) => setDeleteTartar(tartar)} />
                     </li>
                 ))}
             </ul>

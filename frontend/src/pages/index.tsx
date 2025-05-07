@@ -9,6 +9,8 @@ import { ViewTartar } from "@/components/view-tartar"
 
 export default function Index() {
     const [selectedTartar, setSelectedTartar] = useState<Tartar | null>(null)
+    const [editableTartar, setEditableTartar] = useState<Tartar | null>(null)
+    const [deleteTartar, setDeleteTartar] = useState<Tartar | null>(null)
 
     const {
         data: tartars,
@@ -26,7 +28,7 @@ export default function Index() {
                         <TabsTrigger value="map">Carte</TabsTrigger>
                     </TabsList>
                     <TabsContent value="list">
-                        <TartarList tartars={tartars || []} setSelectedTartar={setSelectedTartar} />
+                        <TartarList tartars={tartars || []} setSelectedTartar={setSelectedTartar} setEditableTartar={setEditableTartar} setDeleteTartar={setDeleteTartar} />
                     </TabsContent>
                     <TabsContent value="map" className="h-full">
                         <TartarMap tartars={tartars || []} setSelectedTartar={setSelectedTartar} />

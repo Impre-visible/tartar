@@ -1,35 +1,81 @@
-import { Tartar } from "@/types/tartar";
-import { MapPin, Star } from 'lucide-react';
-import { currencies } from "@/lib/constants/currencies";
+"use client"
 
-export function TartarRow({ tartar, onClick }: { tartar: Tartar; onClick: () => void }) {
+import type { Tartar } from "@/types/tartar"
+import { MapPin, Star, Pencil, Trash2 } from "lucide-react"
+import { currencies } from "@/lib/constants/currencies"
+import {
+    ContextMenu,
+    ContextMenuContent,
+    ContextMenuItem,
+    ContextMenuSeparator,
+    ContextMenuTrigger,
+} from "@/components/ui/context-menu"
+
+interface TartarRowProps {
+    tartar: Tartar
+    onClick: () => void
+    onEdit?: (tartar: Tartar) => void
+    onDelete?: (tartar: Tartar) => void
+}
+
+export function TartarRow({ tartar, onClick, onEdit, onDelete }: TartarRowProps) {
+    const handleEdit = () => {
+        if (onEdit) onEdit(tartar)
+    }
+
+    const handleDelete = () => {
+        if (onDelete) onDelete(tartar)
+    }
+
     return (
-        <div className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-md transition-shadow" onClick={onClick}>
-            <div className="p-6 space-y-4">
-                <div className="flex flex-col justify-between items-between">
-                    <div className="flex flex-row justify-between items-center">
-                        <h3 className="text-xl font-semibold tracking-tight">{tartar.restaurant.name}</h3>
-                        <div className="flex items-center bg-primary/10 px-2.5 py-1 rounded-full">
-                            <span className="font-normal md:font-medium text-xs md:text-sm text-primary whitespace-nowrap">
-                                {tartar.price} {currencies.find((c) => c.value === tartar.currency)?.symbol}
-                            </span>
+        <ContextMenu>
+            <ContextMenuTrigger asChild>
+                <div
+                    className="rounded-lg border bg-card text-card-foreground shadow-sm overflow-hidden hover:shadow-md transition-shadow cursor-pointer"
+                    onClick={onClick}
+                >
+                    <div className="p-6 space-y-4">
+                        <div className="flex flex-col justify-between items-between">
+                            <div className="flex flex-row justify-between items-center">
+                                <h3 className="text-xl font-semibold tracking-tight">{tartar.restaurant.name}</h3>
+                                <div className="flex items-center bg-primary/10 px-2.5 py-1 rounded-full">
+                                    <span className="font-normal md:font-medium text-xs md:text-sm text-primary whitespace-nowrap">
+                                        {tartar.price} {currencies.find((c) => c.value === tartar.currency)?.symbol}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="flex mt-1 text-sm text-muted-foreground">
+                                <MapPin className="mt-[3px] h-3.5 w-3.5 mr-1" />
+                                <span>{tartar.restaurant.address}</span>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-1">
+                            <RatingItem label="Goût" rating={tartar.taste_rating.toFixed(2)} />
+                            <RatingItem label="Texture" rating={tartar.texture_rating.toFixed(2)} />
+                            <RatingItem label="Présentation" rating={tartar.presentation_rating.toFixed(2)} />
+                            <RatingItem label="Total" rating={tartar.total_rating.toFixed(2)} />
                         </div>
                     </div>
-                    <div className="flex mt-1 text-sm text-muted-foreground">
-                        <MapPin className="mt-[3px] h-3.5 w-3.5 mr-1" />
-                        <span>{tartar.restaurant.address}</span>
-                    </div>
                 </div>
-
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 pt-1">
-                    <RatingItem label="Goût" rating={tartar.taste_rating.toFixed(2)} />
-                    <RatingItem label="Texture" rating={tartar.texture_rating.toFixed(2)} />
-                    <RatingItem label="Présentation" rating={tartar.presentation_rating.toFixed(2)} />
-                    <RatingItem label="Total" rating={tartar.total_rating.toFixed(2)} />
-                </div>
-            </div>
-        </div>
-    );
+            </ContextMenuTrigger>
+            <ContextMenuContent className="w-64">
+                <ContextMenuItem onSelect={handleEdit} disabled={!onEdit} className="cursor-pointer">
+                    <Pencil className="h-4 w-4 mr-2" />
+                    Modifier
+                </ContextMenuItem>
+                <ContextMenuSeparator />
+                <ContextMenuItem
+                    onSelect={handleDelete}
+                    disabled={!onDelete}
+                    className="cursor-pointer text-destructive focus:text-destructive"
+                >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Supprimer
+                </ContextMenuItem>
+            </ContextMenuContent>
+        </ContextMenu>
+    )
 }
 
 function RatingItem({ label, rating }: { label: string; rating: string }) {
@@ -41,5 +87,5 @@ function RatingItem({ label, rating }: { label: string; rating: string }) {
                 <span className="font-medium text-sm">{rating}</span>
             </div>
         </div>
-    );
+    )
 }
