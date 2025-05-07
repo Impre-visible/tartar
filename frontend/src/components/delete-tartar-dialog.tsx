@@ -12,6 +12,7 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { useDelete } from "@/hooks/use-delete"
 import { toast } from "sonner"
 
 interface DeleteTartarDialogProps {
@@ -21,42 +22,43 @@ interface DeleteTartarDialogProps {
 }
 
 export function DeleteTartarDialog({ tartar, onOpenChange, refetch }: DeleteTartarDialogProps) {
-    const [isLoading, setIsLoading] = useState(false)
+    const {
+        execute: deleteTartar,
+        isLoading,
+    } = useDelete<Tartar, { id: string }>(`/tartar`);
 
     const handleDelete = async () => {
-        if (!tartar) return
+        if (!tartar) return;
 
-        setIsLoading(true)
-        try {
-            const response = await fetch(`/api/tartar/${tartar.id}`, {
-                method: "DELETE",
-            })
-
-            if (!response.ok) {
-                throw new Error("Failed to delete tartar")
+        toast.promise(
+            deleteTartar({
+                id: tartar.id,
+            }),
+            {
+                loading: "Suppression du tartare...",
+                success: () => {
+                    return "Tartare supprimé avec succès !";
+                },
+                error: (error) => {
+                    return "Erreur lors de la suppression du tartare : " + error.message;
+                },
+                finally: () => {
+                    if (refetch) {
+                        refetch();
+                    }
+                    onOpenChange();
+                }
             }
-
-            toast.success("Tartar supprimé", {
-                description: "Le tartar a été supprimé avec succès.",
-            })
-            refetch()
-        } catch (error) {
-            toast.error("Erreur", {
-                description: "Une erreur est survenue lors de la suppression du tartar.",
-            })
-        } finally {
-            setIsLoading(false)
-            // Don't call onOpenChange() here, let the AlertDialog handle it
-        }
-    }
+        );
+    };
 
     return (
         <AlertDialog open={!!tartar} onOpenChange={onOpenChange}>
             <AlertDialogContent>
                 <AlertDialogHeader>
-                    <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer ce tartar ?</AlertDialogTitle>
+                    <AlertDialogTitle>Êtes-vous sûr de vouloir supprimer ce tartare ?</AlertDialogTitle>
                     <AlertDialogDescription>
-                        Cette action est irréversible. Cela supprimera définitivement le tartar de{" "}
+                        Cette action est irréversible. Cela supprimera définitivement le tartare de{" "}
                         <span className="font-medium">{tartar?.restaurant.name}</span> et toutes les données associées.
                     </AlertDialogDescription>
                 </AlertDialogHeader>
@@ -64,16 +66,16 @@ export function DeleteTartarDialog({ tartar, onOpenChange, refetch }: DeleteTart
                     <AlertDialogCancel disabled={isLoading}>Annuler</AlertDialogCancel>
                     <AlertDialogAction
                         onClick={(e) => {
-                            e.preventDefault()
-                            handleDelete()
+                            e.preventDefault();
+                            handleDelete();
                         }}
                         disabled={isLoading}
-                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                        className="bg-destructive hover:bg-destructive/90 cursor-pointer"
                     >
                         {isLoading ? "Suppression..." : "Supprimer"}
                     </AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>
-    )
+    );
 }
