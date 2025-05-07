@@ -76,7 +76,7 @@ export function ViewTartar({
                                 </span>
                                 <div className="flex gap-2 items-center">
                                     <StarIcon className="mr-1 h-5 w-5 fill-primary text-primary" />
-                                    <span className="text-lg font-bold">{tartar.total_rating.toFixed(1)}/5</span>
+                                    <span className="text-lg font-bold">{tartar.total_rating.toFixed(1)}/10</span>
                                 </div>
                             </div>
                         </div>
@@ -88,14 +88,14 @@ export function ViewTartar({
 }
 
 function RatingBar({ label, value }: { label: string; value: number }) {
-    // Calculate percentage for the progress bar (assuming ratings are out of 5)
-    const percentage = (value / 5) * 100
+    // Calculate percentage for the progress bar (assuming ratings are out of 10)
+    const percentage = (value / 10) * 100
 
     return (
         <div className="space-y-1.5">
             <div className="flex items-center justify-between">
                 <span className="text-sm">{label}</span>
-                <span className="text-sm font-medium">{value.toFixed(1)}/5</span>
+                <span className="text-sm font-medium">{value.toFixed(1)}/10</span>
             </div>
             <Progress value={percentage} className="h-2" />
         </div>
