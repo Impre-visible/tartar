@@ -6,5 +6,4 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
-      - GOOGLE_PLACES_RADIUS=${GOOGLE_PLACES_RADIUS}
     restart: unless-stopped
