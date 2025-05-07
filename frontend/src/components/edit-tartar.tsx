@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,12 +23,9 @@ const tartarSchema = z.object({
 export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar | null; refetch?: () => void; onOpenChange: () => void }) {
     const [isOpen, setIsOpen] = useState(tartar !== null);
 
-
     const {
         execute: updateTartar,
-        isLoading: isLoading,
-        error: error,
-    } = usePut<Tartar, z.infer<typeof tartarSchema>>(`/tartar`);
+    } = usePut<Tartar, z.infer<typeof tartarSchema> & { id?: string }>(`/tartar`);
 
     const form = useForm({
         resolver: zodResolver(tartarSchema),
@@ -76,16 +73,17 @@ export function EditTartar({ tartar, refetch, onOpenChange }: { tartar: Tartar |
 
     const onSubmit = async (data: z.infer<typeof tartarSchema>) => {
         toast.promise(
-            updateTartar(data),
+            updateTartar({
+                id: tartar?.id,
+                ...data,
+            }),
             {
                 loading: "Mise à jour en cours...",
                 success: () => {
-                    toast.success("Tartare mis à jour avec succès");
                     return "Tartare mis à jour avec succès";
                 },
                 error: (error) => {
-                    toast.error("Erreur lors de la mise à jour du tartare");
-                    return error.message;
+                    return "Erreur lors de la mise à jour du tartare: " + error.message;
                 },
                 finally: () => {
                     if (refetch) {
