@@ -1,0 +1,10 @@
+services:
+  tartar:
+    image: imprevisible/tartar:latest
+    ports:
+      - "8088:80"
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
+      - GOOGLE_PLACES_RADIUS=${GOOGLE_PLACES_RADIUS}
+    restart: unless-stopped
