@@ -30,7 +30,7 @@ export function useDelete<T = any, P = any>(
             setError(null)
 
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || ""}//api${url}`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL || ""}/api${url}`, {
                     method: "DELETE",
                     headers: {
                         "Content-Type": "application/json",

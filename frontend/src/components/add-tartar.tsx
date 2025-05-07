@@ -137,7 +137,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
                                                         setResults([]);
                                                         return;
                                                     }
-                                                    const data = await fetch(`${import.meta.env.VITE_API_URL || ""}//api/restaurant/search?query=${query}`);
+                                                    const data = await fetch(`${import.meta.env.VITE_API_URL || ""}/api/restaurant/search?query=${query}`);
                                                     const json = await data.json();
                                                     const places = Array.isArray(json) ? json as GooglePlaceResult[] : [];
                                                     setResults(places)
