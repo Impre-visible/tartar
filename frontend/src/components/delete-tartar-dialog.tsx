@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import type { Tartar } from "@/types/tartar"
 import {
     AlertDialog,

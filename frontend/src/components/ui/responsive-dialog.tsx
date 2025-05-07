@@ -118,7 +118,7 @@ export function ResponsiveDrawerDialogContent({
     description?: string
     asChild?: boolean
 }) {
-    const { isDesktop, onOpenChange, title: contextTitle } = useResponsiveDrawerDialog()
+    const { isDesktop, onOpenChange } = useResponsiveDrawerDialog()
 
     const handleClose = () => {
         onOpenChange(false)
