@@ -1,5 +1,4 @@
 import { PlusIcon } from "lucide-react";
-import { useGeolocated } from "react-geolocated";
 import { Button } from "./ui/button";
 import { Slider } from "@/components/ui/slider"
 
@@ -39,26 +38,6 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
         execute: createTartar,
     } = usePost<Tartar, z.infer<typeof tartarSchema>>("/tartar");
 
-    const { coords, isGeolocationAvailable, isGeolocationEnabled } = useGeolocated({
-        positionOptions: {
-            enableHighAccuracy: false,
-            maximumAge: 0,
-            timeout: 5000,
-        },
-        userDecisionTimeout: 5000,
-        watchPosition: false,
-        onSuccess: async (position) => {
-            console.log("Position: ", position);
-            const data = await fetch(`${import.meta.env.VITE_API_URL}/api/restaurant/search?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}`);
-            const json = await data.json() as GooglePlaceResult[];
-            const places = Array.isArray(json) ? json : [];
-            setResults(places);
-        },
-        onError: (error) => {
-            console.error("Geolocation error: ", error);
-        },
-    });
-
     const form = useForm({
         resolver: zodResolver(tartarSchema),
         defaultValues: {
@@ -79,21 +58,6 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
             setResults([]);
             form.reset();
             return;
-        }
-
-        if (!isGeolocationAvailable) {
-            console.error("Geolocation is not available");
-            return;
-        }
-        if (!isGeolocationEnabled) {
-            console.error("Geolocation is not enabled");
-            return;
-        }
-        if (coords && coords.latitude && coords.longitude && open) {
-            console.log("Latitude: ", coords.latitude); // 37.7749
-            console.log("Longitude: ", coords.longitude); // -122.4194
-        } else {
-            console.error("Coordinates are not available");
         }
     };
 

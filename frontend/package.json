@@ -38,7 +38,6 @@
     "react": "^19.0.0",
     "react-day-picker": "^9.6.7",
     "react-dom": "^19.0.0",
-    "react-geolocated": "^4.3.0",
     "react-hook-form": "^7.56.2",
     "react-map-gl": "^8.0.4",
     "react-router": "^7.5.3",
