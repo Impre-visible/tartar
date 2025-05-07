@@ -4,12 +4,14 @@ import TartarMap from "@/components/tartar-map"
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/animated-tabs"
 import { useGet } from "@/hooks/use-get"
 import { Tartar } from "@/types/tartar"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ViewTartar } from "@/components/view-tartar"
+import { DeleteTartarDialog } from "@/components/delete-tartar-dialog"
+import EditTartar from "@/components/edit-tartar"
 
 export default function Index() {
     const [selectedTartar, setSelectedTartar] = useState<Tartar | null>(null)
-    const [editableTartar, setEditableTartar] = useState<Tartar | null>(null)
+    const [editTartar, setEditTartar] = useState<Tartar | null>(null)
     const [deleteTartar, setDeleteTartar] = useState<Tartar | null>(null)
 
     const {
@@ -18,6 +20,10 @@ export default function Index() {
         error: _error,
         refetch: refetch,
     } = useGet<Tartar[]>("/tartar")
+
+    useEffect(() => {
+        console.log("editTartar:", editTartar)
+    }, [editTartar])
 
     return (
         <>
@@ -28,7 +34,10 @@ export default function Index() {
                         <TabsTrigger value="map">Carte</TabsTrigger>
                     </TabsList>
                     <TabsContent value="list">
-                        <TartarList tartars={tartars || []} setSelectedTartar={setSelectedTartar} setEditableTartar={setEditableTartar} setDeleteTartar={setDeleteTartar} />
+                        <TartarList tartars={tartars || []}
+                            setSelectedTartar={setSelectedTartar}
+                            setEditTartar={setEditTartar}
+                            setDeleteTartar={setDeleteTartar} />
                     </TabsContent>
                     <TabsContent value="map" className="h-full">
                         <TartarMap tartars={tartars || []} setSelectedTartar={setSelectedTartar} />
@@ -37,6 +46,9 @@ export default function Index() {
             </section>
             <AddTartar refetch={refetch} />
             <ViewTartar tartar={selectedTartar} onOpenChange={() => setSelectedTartar(null)} />
+
+            <EditTartar tartar={editTartar} onOpenChange={() => setEditTartar(null)} refetch={refetch} />
+            <DeleteTartarDialog tartar={deleteTartar} onOpenChange={() => setDeleteTartar(null)} refetch={refetch} />
         </>
     )
 }
