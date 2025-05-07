@@ -46,10 +46,6 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
 
             // Handle different sort fields
             switch (sortField) {
-                case "total_rating":
-                    valueA = a.total_rating
-                    valueB = b.total_rating
-                    break
                 case "usd_price":
                     valueA = a.usd_price
                     valueB = b.usd_price
