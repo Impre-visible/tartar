@@ -6,4 +6,6 @@ services:
     environment:
       - DATABASE_URL=${DATABASE_URL}
       - GOOGLE_PLACES_API_KEY=${GOOGLE_PLACES_API_KEY}
+      - VITE_OTP_CODE=${VITE_OTP_CODE} # 123456 for example
+      - VITE_OTP_FORMAT=${VITE_OTP_FORMAT} # XXX-XXX for example
     restart: unless-stopped
