@@ -16,11 +16,13 @@ import { TartarService } from './modules/tartar/service/tartar.service';
 import { TartarController } from './modules/tartar/controller/tartar.controller';
 import { TartarModule } from './modules/tartar/tartar.module';
 
+import { OtpModule } from './modules/otp/otp.module';
+
 @Module({
   imports: [ConfigModule.forRoot({
     isGlobal: true,
     envFilePath: ['.env'],
-  }), HttpModule, RestaurantModule, TartarModule],
+  }), HttpModule, RestaurantModule, TartarModule, OtpModule],
   controllers: [AppController, RestaurantController, TartarController],
   providers: [AppService, PrismaService, RestaurantService, TartarService],
 })

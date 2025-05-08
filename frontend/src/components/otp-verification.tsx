@@ -1,11 +1,12 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect, useRef } from "react"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
 import { env } from "@/environment"
+import { usePost } from "@/hooks/use-post"
 
 interface OtpVerificationProps {
     isOpen: boolean
@@ -28,7 +29,49 @@ export function OtpVerification({
     expectedCode,
 }: OtpVerificationProps) {
     const [otpValue, setOtpValue] = useState("")
-    const maxLength = expectedCode?.length || env.VITE_OTP_CODE?.toString().length || 6
+    const maxLength = expectedCode?.length || (env.VITE_OTP_FORMAT?.match(/X/g) || []).length || 6
+
+    const processedResultRef = useRef<string | null>(null);
+
+    const {
+        execute: validateOtp,
+        isLoading,
+        error: apiError,
+        data: validationResult,
+        reset
+    } = usePost<{ isValid: boolean }, { code: string }>('/otp/validate')
+
+    useEffect(() => {
+        if (isOpen) {
+            processedResultRef.current = null;
+        } else {
+            reset()
+            setOtpValue("")
+        }
+    }, [isOpen, reset])
+
+    useEffect(() => {
+        if (validationResult && isOpen &&
+            processedResultRef.current !== `${Date.now()}-${JSON.stringify(validationResult)}`) {
+
+            processedResultRef.current = `${Date.now()}-${JSON.stringify(validationResult)}`;
+
+            if (validationResult.isValid) {
+                onSuccess()
+                setOtpValue("")
+                reset()
+            } else {
+                onError("Code OTP incorrect")
+            }
+        }
+    }, [validationResult, onSuccess, onError, isOpen, reset])
+
+    useEffect(() => {
+        if (apiError && processedResultRef.current !== apiError.message) {
+            processedResultRef.current = apiError.message;
+            onError(`Erreur de connexion: ${apiError.message}`)
+        }
+    }, [apiError, onError])
 
     const otpGroups = useMemo(() => {
         const formatString = env.VITE_OTP_FORMAT
@@ -88,15 +131,8 @@ export function OtpVerification({
     }, [maxLength])
 
     const verifyOtp = () => {
-        const envCode = env.VITE_OTP_CODE || "123456" // Default value
-        const codeToCheck = expectedCode || envCode
-
-        if (otpValue === codeToCheck) {
-            onSuccess()
-            setOtpValue("")
-        } else {
-            onError("Code OTP incorrect")
-        }
+        processedResultRef.current = null;
+        validateOtp({ code: otpValue })
     }
 
     const handleClose = () => {
@@ -144,10 +180,12 @@ export function OtpVerification({
                         </div>
                     </div>
                     <div className="flex justify-end gap-2">
-                        <Button variant="outline" onClick={handleClose}>
+                        <Button variant="outline" onClick={handleClose} disabled={isLoading}>
                             Annuler
                         </Button>
-                        <Button onClick={verifyOtp}>Vérifier</Button>
+                        <Button onClick={verifyOtp} disabled={isLoading}>
+                            {isLoading ? "Vérification..." : "Vérifier"}
+                        </Button>
                     </div>
                 </div>
             </DialogContent>
