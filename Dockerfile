@@ -1,4 +1,4 @@
-FROM node:18 AS backend-builder
+FROM node:24-slim AS backend-builder
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ COPY backend/ .
 RUN npx prisma generate
 RUN npm run build
 
-FROM node:18 AS frontend-builder
+FROM node:24-slim AS frontend-builder
 
 WORKDIR /app
 
