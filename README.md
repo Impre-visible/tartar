@@ -43,10 +43,27 @@ docker run -p 80:80 \
   imprevisible/tartar
 ```
 
+### Docker Images
+
+Our Dockerfile uses:
+- `node:24-slim` for building the backend and frontend
+- `nginx:alpine` for serving the application
+
 ### Required Environment Variables
 
 - `DATABASE_URL`: Connection string for your PostgreSQL database
 - `GOOGLE_PLACES_API_KEY`: API key for Google Places integration
+
+## 🤖 AI-Assisted Development
+
+This project was developed using various artificial intelligence tools to enhance productivity:
+
+- **GPT-4o**: Development assistance, code generation, and debugging
+- **Claude 3.5 & 3.7**: Design assistance and optimization
+- **Mistral**: Documentation and testing support
+- **v0.dev**: UI design and prototyping
+
+The use of these tools significantly accelerated development while maintaining high code quality.
 
 ## 🏗️ Project Structure
 
