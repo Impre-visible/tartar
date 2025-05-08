@@ -22,8 +22,6 @@ export class TartarService {
 
         if (!restaurant || !currency || price === undefined || texture === undefined ||
             taste === undefined || presentation === undefined || totalScore === undefined || !createdAt) {
-            console.log("Missing required fields");
-            console.log(data);
             throw new Error("Missing required fields");
         }
 
@@ -92,7 +90,6 @@ export class TartarService {
 
         if (!id || !currency || price === undefined || texture === undefined ||
             taste === undefined || presentation === undefined || totalScore === undefined) {
-            console.log(data);
             throw new Error("Missing required fields");
         }
 

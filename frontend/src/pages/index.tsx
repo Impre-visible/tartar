@@ -21,10 +21,6 @@ export default function Index() {
         refetch: refetch,
     } = useGet<Tartar[]>("/tartar")
 
-    useEffect(() => {
-        console.log("editTartar:", editTartar)
-    }, [editTartar])
-
     return (
         <>
             <section className="h-full px-1 md:px-8 w-full">

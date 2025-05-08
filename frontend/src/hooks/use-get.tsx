@@ -1,3 +1,4 @@
+import { env } from '@/environment';
 import { useState, useEffect } from 'react';
 
 interface UseGetResult<T> {
@@ -19,15 +20,13 @@ export function useGet<T = any>(url: string, options?: RequestInit): UseGetResul
     const [error, setError] = useState<Error | null>(null);
     const [refreshIndex, setRefreshIndex] = useState<number>(0);
 
-    console.log(import.meta.env)
-
     useEffect(() => {
         let isMounted = true;
         setIsLoading(true);
 
         const fetchData = async () => {
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || ""}/api${url}`, {
+                const response = await fetch(`${env.VITE_API_URL || ""}/api${url}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

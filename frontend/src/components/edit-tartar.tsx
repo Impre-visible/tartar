@@ -260,7 +260,6 @@ export function EditTartar({
                 onError={handleOtpError}
                 title="Vérification de sécurité"
                 description="Veuillez entrer le code OTP pour confirmer la modification."
-                expectedCode={import.meta.env.VITE_OTP_CODE || "123456"}
             />
         </>
     )

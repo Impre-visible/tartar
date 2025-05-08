@@ -1,5 +1,6 @@
 "use client"
 
+import { env } from "@/environment"
 import { useState, useCallback } from "react"
 
 interface UsePostResult<T, P> {
@@ -30,7 +31,7 @@ export function usePost<T = any, P = any>(
             setError(null)
 
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL || ""}/api${url}`, {
+                const response = await fetch(`${env.VITE_API_URL || ""}/api${url}`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",

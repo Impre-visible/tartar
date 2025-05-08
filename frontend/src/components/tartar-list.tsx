@@ -175,7 +175,7 @@ const TartarList: React.FC<TartarListProps> = ({ tartars = [], setSelectedTartar
             <ul className="flex flex-col gap-4">
                 {sortedTartars.map((tartar) => (
                     <li key={tartar.id}>
-                        <TartarRow tartar={tartar} onClick={() => setSelectedTartar(tartar)} onDelete={() => { console.log("Delete tartar"); setDeleteTartar(tartar) }} onEdit={() => { console.log("Edit tartar"); setEditTartar(tartar) }} />
+                        <TartarRow tartar={tartar} onClick={() => setSelectedTartar(tartar)} onDelete={() => setDeleteTartar(tartar)} onEdit={() => setEditTartar(tartar)} />
                     </li>
                 ))}
             </ul>

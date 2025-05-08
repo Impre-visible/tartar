@@ -24,6 +24,7 @@ import { usePost } from "@/hooks/use-post"
 import type { Tartar } from "@/types/tartar"
 import { toast } from "sonner"
 import { OtpVerification } from "@/components/otp-verification"
+import { env } from "@/environment"
 
 const tartarSchema = z.object({
     restaurant: z.string().min(1, "Veuillez sélectionner un restaurant"),
@@ -133,7 +134,7 @@ function AddTartar({ refetch }: { refetch?: () => void }) {
         }
 
         try {
-            const apiUrl = import.meta.env.VITE_API_URL || ""
+            const apiUrl = env.VITE_API_URL || ""
             const data = await fetch(`${apiUrl}/api/restaurant/search?query=${query}`)
             const json = await data.json()
             const places = Array.isArray(json) ? (json as GooglePlaceResult[]) : []

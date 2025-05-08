@@ -38,7 +38,6 @@ export function TartarRow({ tartar, onClick, onEdit, onDelete }: TartarRowProps)
     }
 
     const handleMenuItemClick = (handler: () => void) => {
-        console.log("Menu item clicked", handler)
         return (e: React.MouseEvent) => {
             e.stopPropagation()
             setIsMenuOpen(false)

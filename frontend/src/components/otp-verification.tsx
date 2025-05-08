@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator } from "@/components/ui/input-otp"
+import { env } from "@/environment"
 
 interface OtpVerificationProps {
     isOpen: boolean
@@ -27,10 +28,10 @@ export function OtpVerification({
     expectedCode,
 }: OtpVerificationProps) {
     const [otpValue, setOtpValue] = useState("")
-    const maxLength = expectedCode?.length || import.meta.env.VITE_OTP_CODE?.length || 6
+    const maxLength = expectedCode?.length || env.VITE_OTP_CODE?.toString().length || 6
 
     const otpGroups = useMemo(() => {
-        const formatString = import.meta.env.VITE_OTP_FORMAT as string | undefined
+        const formatString = env.VITE_OTP_FORMAT
 
         if (formatString) {
             const groups = formatString.split("-")
@@ -87,7 +88,7 @@ export function OtpVerification({
     }, [maxLength])
 
     const verifyOtp = () => {
-        const envCode = import.meta.env.VITE_OTP_CODE || "123456" // Default value
+        const envCode = env.VITE_OTP_CODE || "123456" // Default value
         const codeToCheck = expectedCode || envCode
 
         if (otpValue === codeToCheck) {
